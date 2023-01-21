@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RabbitMQ.Client;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,17 +23,22 @@ var provider = builder.Services.BuildServiceProvider();
 var Configuration = provider.GetRequiredService<IConfiguration>();
 
 builder.Services.AddControllers();
+          
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
 #region FluentValidation
-builder.Services.AddFluentValidation(conf =>
-{
-    conf.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
-    conf.AutomaticValidationEnabled = false;
-});
+builder.Services.AddFluentValidation(options =>
+      {
+          // Validate child properties and root collection elements
+          options.ImplicitlyValidateChildProperties = true;
+          options.ImplicitlyValidateRootCollectionElements = true;
+
+          // Automatic registration of validators in assembly
+          options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+      });
 #endregion
 
 
@@ -70,8 +76,6 @@ builder.Services.AddAuthentication(x =>
                 };
             });
 #endregion
-
-
 
 
 #region Tenant Config Dependencies

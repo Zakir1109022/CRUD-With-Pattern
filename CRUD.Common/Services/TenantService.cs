@@ -14,6 +14,7 @@ namespace CRUD.Common.Services
         private readonly TenantSettings _tenantSettings;
         private Tenant _currentTenant;
         private HttpContext _httpContext;
+
         public TenantService(IOptions<TenantSettings> tenantSettings, IHttpContextAccessor contextAccessor)
         {
             _tenantSettings = tenantSettings.Value;
@@ -21,6 +22,8 @@ namespace CRUD.Common.Services
 
             if (_httpContext != null)
             {
+                var token = _httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
                 if (_httpContext.Request.Headers.TryGetValue("TenantId", out var tenantId))
                 {
                     SetTenant(tenantId);
@@ -28,7 +31,16 @@ namespace CRUD.Common.Services
                 else
                 {
                     var identity = _httpContext.User.Identity;
-                    tenantId = (identity as ClaimsIdentity).FindFirst("TenantId").Value.ToString();
+                    if((identity as ClaimsIdentity).FindFirst("TenantId") == null)
+                    {
+                        tenantId = "Product-DB";
+                    }
+                    else
+                    {
+                        tenantId = (identity as ClaimsIdentity).FindFirst("TenantId").Value.ToString();
+                    }
+
+                   
 
                     if (string.IsNullOrEmpty(tenantId)) throw new Exception("Invalid Tenant!");
                      

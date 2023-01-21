@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace CRUD.Application.CommandHandlers
 {
 
-   public class SentEmailHandler : IRequestHandler<SentEmailCommand, OrderResponse>
+   public class SentEmailHandler : IRequestHandler<SentEmailCommand, bool>
     {
         private readonly IMapper _mapper;
 
@@ -21,17 +21,11 @@ namespace CRUD.Application.CommandHandlers
         }
 
 
-        public async Task<OrderResponse> Handle(SentEmailCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(SentEmailCommand request, CancellationToken cancellationToken)
         {
-
-
-            OrderResponse response = new OrderResponse()
-            {
-                Orders = null
-            };
-
-
-            return response;
+            Console.WriteLine("Email sent successfully");
+            
+            return true;
         }
 
     }

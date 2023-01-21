@@ -19,6 +19,10 @@ namespace CRUD.Application.Services
         public AccessTokenService(IConfiguration config, IHttpContextAccessor httpContextAccessor)
         {
             _tenantId = httpContextAccessor.HttpContext.Request.Headers["tenantId"];
+            if(string.IsNullOrEmpty(_tenantId))
+            {
+                _tenantId = "Product-DB";
+            }
             _config = config;
         }
         public string GenerateJSONWebToken(UserDto userInfo)

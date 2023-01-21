@@ -29,7 +29,8 @@ namespace CRUD.Application.CommandHandlers
             var order = new Order() {
                 Id = Guid.NewGuid().ToString(),
                 UserName = request.UserName,
-                EmailAddress=request.EmailAddress
+                EmailAddress=request.EmailAddress,
+                TotalPrice=request.TotalPrice
             };
 
              await _orderService.CreateAsync(order);
